@@ -122,3 +122,16 @@ SELECT
 	SUM(STD_SCORE) AS 총점 
 FROM NEW_STUDENT
 
+-- GROUPING SETS
+SELECT 
+    STD_MAJOR, 
+    STD_GENDER, 
+    COUNT(*) AS 학생수, 
+    TRUNC(AVG(STD_SCORE), 2) AS 평균점수
+FROM NEW_STUDENT
+GROUP BY GROUPING SETS (
+    (STD_MAJOR, STD_GENDER),  -- 학과별 + 성별
+    (STD_MAJOR),              -- 학과별
+    (STD_GENDER),             -- 성별별
+    ()                        -- 전체
+);
