@@ -41,6 +41,7 @@ SELECT STD_MAJOR AS 학과명, COUNT(*)
 FROM STUDENT
 GROUP BY STD_MAJOR HAVING COUNT(*) >= 50;
 
+--연습문제
 
 -- NEW_STUDENT TABLE 생성
 CREATE TABLE NEW_STUDENT(
@@ -51,18 +52,73 @@ CREATE TABLE NEW_STUDENT(
     STD_GENDER CHAR(1)
 );
 
+SELECT * FROM NEW_STUDENT;
 
---연습문제
---입학한 년도별, 학과별, 성별로 인원수, 평점 평균, 평점 총합를 조회하세요.
 
---입학한 년도별, 학과별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+-- 1. 입학한 년도별, 학과별, 성별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT 
+	SUBSTR(STD_NO, 1, 4) AS 입학년도,
+	STD_MAJOR AS 학과명,
+	STD_GENDER AS 성별,
+	COUNT(*) AS 인원수,
+	TRUNC (AVG(STD_SCORE), 2) AS "평점 평균",
+	SUM(STD_SCORE) AS 총점
+FROM NEW_STUDENT
+GROUP BY SUBSTR(STD_NO, 1, 4), STD_MAJOR, STD_GENDER; 
 
---입학한 년도별, 인원수, 평점 평균, 평점 총합를 조회하세요.
+-- 2. 입학한 년도별, 학과별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT
+	SUBSTR(STD_NO, 1, 4) AS 입학년도,
+	STD_MAJOR AS 학과명,
+	COUNT(*) AS 인원수,
+	TRUNC (AVG(STD_SCORE), 2) AS "평점 평균",
+	SUM(STD_SCORE) AS 총점
+FROM NEW_STUDENT
+GROUP BY SUBSTR(STD_NO, 1, 4), STD_MAJOR;
 
---학과별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+-- 3. 입학한 년도별, 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT 
+	SUBSTR(STD_NO, 1, 4) AS 입학년도,
+	COUNT(*) AS 인원수,
+	SUM(STD_SCORE) AS 총점,
+	TRUNC(AVG(STD_SCORE), 2) AS 평균 
+FROM NEW_STUDENT
+GROUP BY SUBSTR (STD_NO, 1, 4);
 
---학과별, 성별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+-- 4. 학과별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT 
+	STD_MAJOR AS 학과명,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평균,
+	SUM(STD_SCORE) AS 총점
+FROM NEW_STUDENT
+GROUP BY STD_MAJOR
+ORDER BY 총점 DESC;
 
---성별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+-- 5. 학과별, 성별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT
+	STD_MAJOR AS 학과,
+	STD_GENDER AS 성별,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평균점수,
+	SUM(STD_SCORE) AS 총점
+FROM NEW_STUDENT
+GROUP BY STD_MAJOR , STD_GENDER
+ORDER BY 평균점수 DESC;
 
---전체 인원수, 평점 평균, 평점 총합를 조회하세요.
+-- 6. 성별로 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT
+	STD_GENDER AS 성별,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평균점수,
+	SUM(STD_SCORE) AS 총점 
+FROM NEW_STUDENT
+GROUP BY STD_GENDER;
+
+-- 7. 전체 인원수, 평점 평균, 평점 총합를 조회하세요.
+SELECT
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평균점수,
+	SUM(STD_SCORE) AS 총점 
+FROM NEW_STUDENT
+
