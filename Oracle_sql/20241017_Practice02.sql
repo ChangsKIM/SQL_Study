@@ -130,7 +130,28 @@ JOIN CAR_SELL cs ON c.CAR_ID = cs.CAR_ID
 JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE 
 WHERE cs.CAR_ID IS NULL;
 
+-- 06. 판매 연도별, 제조사별, 판매 대수 총합, 판매금액 총합, 판매금액 평균 조회
+SELECT 
+	TO_CHAR(cs.CAR_SELL_DATE, 'YYYY') AS 연도별,
+	cm.CAR_MAKER_NAME AS 제조사,
+	SUM(cs.CAR_SELL_EA) AS 판매대수,
+	SUM(cs.CAR_SELL_PRICE) AS 판매금액,
+	TRUNC(AVG(cs.CAR_SELL_PRICE), 2) AS 평균금액 
+FROM CAR c 
+JOIN CAR_SELL cs ON c.CAR_ID = cs.CAR_ID 
+JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE 
+GROUP BY TO_CHAR(cs.CAR_SELL_DATE, 'YYYY'),
+		 cm.CAR_MAKER_NAME;
 
-
-
-
+-- 07. 판매 연도/월별, 제조사별 조회. 판매 대수 총합, 판매금액 총합, 판매평균 출력
+SELECT 
+	TO_CHAR(cs.CAR_SELL_DATE, 'YYYY/MM') AS 월별,
+	cm.CAR_MAKER_NAME AS 제조사,
+	SUM(cs.CAR_SELL_EA) AS 판매대수,
+	SUM(cs.CAR_SELL_PRICE) AS 판매금액,
+	TRUNC(AVG(cs.CAR_SELL_PRICE), 2) AS 평균금액 
+FROM CAR c 
+JOIN CAR_SELL cs ON c.CAR_ID = cs.CAR_ID 
+JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE 
+GROUP BY TO_CHAR(cs.CAR_SELL_DATE, 'YYYY/MM'),
+		 cm.CAR_MAKER_NAME;
