@@ -227,7 +227,7 @@ JOIN EMP_DEPARTMENT ed ON E.DEPT_NO = ED.DEPT_NO
 GROUP BY ED.DEPT_NAME
 ORDER BY 사원수 DESC ; 
 
--- 08. 각 부서별로 연봉을 합산하여 부서별 연봉 순위와 부서명, 연봉 총합을 조회하는 SQL문을 작성하세요.
+-- 09. 각 부서별로 연봉을 합산하여 부서별 연봉 순위와 부서명, 연봉 총합을 조회하는 SQL문을 작성하세요.
 SELECT 
 	ED.DEPT_NAME AS 부서,
 	SUM(E.EMP_SALARY) AS 연봉합,
