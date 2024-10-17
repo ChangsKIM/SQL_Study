@@ -75,5 +75,62 @@ WHERE ss.SCHOLARSHIP_NO IS NULL
 GROUP BY m.MAJOR_NAME;
 
 
+-- 자동차 테이블 문제
+-- 01. 자동차 정보 조회시 자동차 번호, 자동차 모델명, 제조사명, 제조년도, 금액 출력
+SELECT 
+	c.CAR_ID AS 번호,
+	cm.CAR_MAKER_CODE AS 모델명,
+	cm.CAR_MAKER_NAME AS 제조사,
+	c.CAR_MAKE_YEAR AS 제조년도,
+	c.CAR_PRICE AS 금액
+FROM CAR c 
+LEFT OUTER JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE 
+
+-- 02. 자동차 제조사별 차량 대수, 금액 평균가, 최고가, 최소가 조회
+SELECT 
+  cm.CAR_MAKER_NAME AS 제조사,
+  COUNT(*) AS "차량 대수",
+  TRUNC(AVG(c.CAR_PRICE), 2) AS 평균가, 
+  MAX(c.CAR_PRICE) AS 최고가,
+  MIN(c.CAR_PRICE) AS 최저가 
+FROM CAR c
+LEFT OUTER JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE
+GROUP BY cm.CAR_MAKER_NAME ;
+
+-- 03. 자동차 제조사별, 제조년도별, 출시된 차량 대수를 조회. 단, 금액이 10,000이상인 것들만 출력
+SELECT 
+	cm.CAR_MAKER_NAME AS 제조사,
+	c.CAR_MAKE_YEAR AS 제조년도,
+	COUNT(*) AS "차량 대수"
+FROM CAR c 
+JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE 
+WHERE c.CAR_PRICE <= 10000
+GROUP BY cm.CAR_MAKER_NAME , c.CAR_MAKE_YEAR; 
+
+-- 04. 자동차 판매 정보 조회. 판매번호, 판매된 모델명, 판매 날짜, 판매 대수, 판매 금액 출력
+SELECT 
+	cs.CAR_SELL_NO AS 판매번호,
+	c.CAR_NAME AS 모델명,
+	cs.CAR_SELL_DATE AS 날짜,
+	cs.CAR_SELL_EA AS 판매대수,
+	cs.CAR_SELL_PRICE AS 판매금액
+FROM CAR c 
+JOIN CAR_SELL cs ON c.CAR_ID = cs.CAR_ID 
+JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE ;
+
+-- 05. 한번도 판매되지 않은 차량 조회. 자동차 번호, 모델명, 제조사, 제조년도, 금액 출력
+SELECT 
+	c.CAR_ID,
+	c.CAR_NAME,
+	cm.CAR_MAKER_NAME,
+	c.CAR_MAKE_YEAR,
+	c.CAR_PRICE 
+FROM CAR c 
+JOIN CAR_SELL cs ON c.CAR_ID = cs.CAR_ID 
+JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MAKER_CODE 
+WHERE cs.CAR_ID IS NULL;
+
+
+
 
 
