@@ -158,21 +158,81 @@ GROUP BY TO_CHAR(cs.CAR_SELL_DATE, 'YYYY/MM'),
 		 
 		
 -- 사원 테이블 문제
---문제
---각 사원의 이름, 부서명, 직급명을 조회하는 SQL 문을 작성하세요.
+-- 01. 각 사원의 이름, 부서명, 직급명을 조회하는 SQL 문을 작성하세요.
+SELECT
+	E.EMP_NAME AS 이름,
+	ED.DEPT_NAME AS 부서명,
+	EP.POS_NAME AS 직급명
+FROM EMPLOYEE e 
+JOIN EMP_DEPARTMENT ed ON E.DEPT_NO = ED.DEPT_NO
+JOIN EMP_POSITION ep ON E.POS_NO = EP.POS_NO ;
+		
+-- 02. 각 부서별로 평균 연봉을 계산하여 부서명과 평균 연봉을 조회하는 SQL 문을 작성하세요. 
+-- 평균 연봉은 내림차순으로 정렬하세요.
+SELECT
+	ed.DEPT_NAME AS 부서명,
+	TRUNC(AVG(e.EMP_SALARY), 2) AS 평균연봉 
+FROM EMPLOYEE e 
+JOIN EMP_DEPARTMENT ed ON E.DEPT_NO = ED.DEPT_NO
+GROUP BY ed.DEPT_NAME
+ORDER BY 평균연봉 DESC; 
 
---각 부서별로 평균 연봉을 계산하여 부서명과 평균 연봉을 조회하는 SQL 문을 작성하세요. 평균 연봉은 내림차순으로 정렬하세요.
+-- 03. 사원들의 연봉 순위(RANK)를 구하고, 사원 이름, 연봉, 연봉 순위를 조회하는 SQL 문을 작성하세요. 
+-- 단, 동일한 연봉일 경우 동일한 순위를 부여하며, 연봉은 내림차순으로 정렬하세요.
+SELECT 
+	e.EMP_NAME AS 이름,
+	e.EMP_SALARY AS 연봉,
+	RANK () OVER (ORDER BY e.EMP_SALARY DESC) AS 연봉순위
+FROM EMPLOYEE e ;
 
---사원들의 연봉 순위(RANK)를 구하고, 사원 이름, 연봉, 연봉 순위를 조회하는 SQL 문을 작성하세요. 동일한 연봉일 경우 동일한 순위를 부여하며, 연봉은 내림차순으로 정렬하세요.
+-- 04. 새로운 부서 '홍보부'를 부서 번호 'D009'로 EMP_DEPARTMENT 테이블에 추가하는 SQL 문을 작성하세요.
+INSERT INTO EMP_DEPARTMENT VALUES ('D009', '홍보부');
+SELECT * FROM EMP_DEPARTMENT ;
 
---새로운 부서 '홍보부'를 부서 번호 'D009'로 EMP_DEPARTMENT 테이블에 추가하는 SQL 문을 작성하세요.
+-- 05. 사번이 'A20201479'인 사원의 연봉을 10% 인상하는 SQL 문을 작성하세요.
+SELECT *
+FROM EMPLOYEE 
+WHERE EMP_NO = 'A20201479'; -- 변환전 연봉 37,661,681
 
---사번이 'A20201111'인 사원의 연봉을 10% 인상하는 SQL 문을 작성하세요.
+UPDATE EMPLOYEE 
+SET EMP_SALARY = EMP_SALARY * 1.1
+WHERE EMP_NO = 'A20201479'; -- 변환후 연봉 41,427,849
 
---직급 번호가 '08'인 사원들을 EMPLOYEE 테이블에서 삭제하는 SQL 문을 작성하세요.
+SELECT EMP_NO FROM EMPLOYEE; 
 
---각 직급별로 사원 수를 계산하여 직급명과 사원 수를 조회하는 SQL 문을 작성하세요. 사원 수는 내림차순으로 정렬하세요.
+-- 06. 직급 번호가 '08'인 사원들을 EMPLOYEE 테이블에서 삭제하는 SQL 문을 작성하세요.
+SELECT POS_NO FROM EMPLOYEE;
+SELECT * FROM EMP_POSITION ; -- POS_NO 08 사원
 
---각 부서별로 사원 수를 계산하여 부서명과 사원 수와 순위를 조회하는 SQL 문을 작성하세요. 사원 수는 내림차순으로 정렬하세요.
+DELETE EMPLOYEE WHERE POS_NO = '08';
 
---각 부서별로 연봉을 합산하여 부서별 연봉 순위와 부서명, 연봉 총합을 조회하는 SQL문을 작성하세요.
+-- 07. 각 직급별로 사원 수를 계산하여 직급명과 사원 수를 조회하는 SQL 문을 작성하세요. 
+-- 사원 수는 내림차순으로 정렬하세요.
+SELECT 
+	EP.POS_NAME AS 직급,
+	COUNT(*) AS 사원수
+FROM EMPLOYEE e 
+JOIN EMP_POSITION ep ON E.POS_NO = EP.POS_NO 
+GROUP BY EP.POS_NAME
+ORDER BY COUNT(*) DESC ;
+
+-- 08. 각 부서별로 사원 수를 계산하여 부서명과 사원 수와 순위를 조회하는 SQL 문을 작성하세요. 
+-- 사원 수는 내림차순으로 정렬하세요.
+SELECT
+	ED.DEPT_NAME AS 부서,
+	COUNT(*) AS 사원수, 
+	RANK () OVER (ORDER BY COUNT(*) DESC) AS 순위
+FROM EMPLOYEE e 
+JOIN EMP_DEPARTMENT ed ON E.DEPT_NO = ED.DEPT_NO
+GROUP BY ED.DEPT_NAME
+ORDER BY 사원수 DESC ; 
+
+-- 08. 각 부서별로 연봉을 합산하여 부서별 연봉 순위와 부서명, 연봉 총합을 조회하는 SQL문을 작성하세요.
+SELECT 
+	ED.DEPT_NAME AS 부서,
+	SUM(E.EMP_SALARY) AS 연봉합,
+	RANK() OVER(ORDER BY SUM(E.EMP_SALARY) DESC) AS 순위
+FROM EMPLOYEE e 
+JOIN EMP_DEPARTMENT ed ON E.DEPT_NO = ED.DEPT_NO 
+GROUP BY ED.DEPT_NAME
+ORDER BY 연봉합 DESC ;
